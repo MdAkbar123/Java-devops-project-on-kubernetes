@@ -1,0 +1,52 @@
+---
+# 1. Setup Docker & Common Tools on ALL Servers
+- name: "Setup Docker & Common Tools"
+  hosts: all
+  become: true
+  roles:
+    - common
+
+# 2. Setup Jenkins
+- name: "Setup Jenkins"
+  hosts: jenkins_server
+  become: true
+  roles:
+    - jenkins
+
+# 3. Setup SonarQube (Docker Container)
+- name: "Setup SonarQube"
+  hosts: sonarqube_server
+  become: true
+  vars:
+    container_name: "sonar"
+    image_name: "sonarqube:lts-community"
+    host_port: 9000
+    container_port: 9000
+  roles:
+    - docker_services
+
+# 4. Setup Nexus (Docker Container)
+- name: "Setup Nexus"
+  hosts: nexus_server
+  become: true
+  vars:
+    container_name: "nexus"
+    image_name: "sonatype/nexus3:latest"
+    host_port: 8081
+    container_port: 8081
+  roles:
+    - docker_services
+
+# 5. Setup Kubernetes (Install Tools only)
+- name: "Setup Kubernetes (Install Tools only)"
+  hosts: k8s_master, k8s_workers
+  become: true
+  roles:
+    - kubernetes
+
+# 6. Setup Monitoring
+- name: "Setup Monitoring"
+  hosts: monitoring_server
+  become: true
+  roles:
+    - monitoring

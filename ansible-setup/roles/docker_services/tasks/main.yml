@@ -1,0 +1,14 @@
+---
+- name: Pull Docker Image
+  docker_image:
+    name: "{{ image_name }}"
+    source: pull
+
+- name: Run Container
+  docker_container:
+    name: "{{ container_name }}"
+    image: "{{ image_name }}"
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ host_port }}:{{ container_port }}"

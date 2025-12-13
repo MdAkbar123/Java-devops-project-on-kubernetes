@@ -1,0 +1,103 @@
+- name: Disable Swap
+  ansible.builtin.shell:
+    cmd: swapoff -a && sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+  changed_when: true # Indicate that this command changes the system state
+
+- name: Ensure overlay module is loaded
+  community.general.modprobe:
+    name: overlay
+    state: present
+
+- name: Ensure br_netfilter module is loaded
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Add k8s.conf to modules-load.d
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      overlay
+      br_netfilter
+    mode: '0644'
+
+- name: Set Sysctl params
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    state: "present"
+    reload: true
+  loop:
+    - { name: 'net.bridge.bridge-nf-call-iptables', value: '1' }
+    - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
+    - { name: 'net.ipv4.ip_forward', value: '1' }
+
+- name: Define OS version for CRI-O
+  set_fact:
+    os_version: "xUbuntu_24.04"
+    kubernetes_crio_version: "1.30"  # Or match your Kubernetes version
+
+- name: Add CRI-O GPG key
+  apt_key:
+    url: "https://pkgs.k8s.io/addons:/cri-o:/prerelease:/main/deb/Release.key"
+    state: present
+    keyring: /etc/apt/keyrings/cri-o-apt-keyring.gpg
+
+- name: Add CRI-O Repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/prerelease:/main/deb/ /"
+    state: present
+    filename: cri-o
+
+- name: Update apt cache (again)
+  apt:
+    update_cache: true
+
+- name: Install CRI-O
+  apt:
+    name:
+      - cri-o
+    state: present
+
+- name: Start and Enable CRI-O
+  service:
+    name: crio
+    state: started
+    enabled: true
+
+- name: Create keyrings directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Kubernetes Apt Key
+  shell: |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  args:
+    creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Add Kubernetes Repo
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
+    state: present
+    filename: kubernetes
+
+- name: Install Kube tools
+  ansible.builtin.apt:
+    name: 
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+    update_cache: true
+
+- name: Hold Kube packages
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl
