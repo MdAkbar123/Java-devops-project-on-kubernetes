@@ -17,7 +17,7 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 // Replace with your specific repo URL and Credential ID
-                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/jaiswaladi246/Boardgame.git' 
+                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/MdAkbar123/Boardgame.git' 
             }
         }
         
@@ -83,7 +83,6 @@ pipeline {
         stage('Build and Tag Docker Image') {
             steps {
                 script {
-                    // Replace 'jaiswaladi246' with your DockerHub Username
                     withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                         sh "docker build -t akbar00/Boardgame:latest ."
                     }
@@ -145,7 +144,7 @@ pipeline {
                     body: body,
                     to: 'iamakbar816@gmail.com', 
                     from: 'iamakbar816@gmail.com',
-                    cc: 'iamakbar816@gmail.com',
+                    cc: 'akbarali.infra@gmail.com',
                     replyTo: 'iamakbar816@gmail.com',
                     mimeType: 'text/html',
                     attachmentsPattern: 'trivy-image-report.html'
