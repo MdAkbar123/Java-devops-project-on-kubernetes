@@ -83,7 +83,7 @@ pipeline {
         stage('Build and Tag Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                    withDockerRegistry(credentialsId: 'docker-hub-cred', toolName: 'docker') {
                         sh "docker build -t akbar00/Boardgame:latest ."
                     }
                 }
@@ -94,8 +94,8 @@ pipeline {
         stage('Docker Image Scan') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                        sh "trivy image --format table -o trivy-image-report.html akbar00/Boardgame:latest"
+                    withDockerRegistry(credentialsId: 'docker-hub-cred', toolName: 'docker') {
+                        sh "trivy image --format table -o trivy-image-report.html akbar00/boardgame:latest"
                     }
                 }
             }
@@ -105,8 +105,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                        sh "docker push akbar00/Boardgame:latest"
+                    withDockerRegistry(credentialsId: 'docker-hub-cred', toolName: 'docker') {
+                        sh "docker push akbar00/boardgame:latest"
                     }
                 }
             }
