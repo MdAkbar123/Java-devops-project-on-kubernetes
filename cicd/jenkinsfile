@@ -84,7 +84,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'docker-hub-cred', toolName: 'docker') {
-                        sh "docker build -t akbar00/Boardgame:latest ."
+                        sh "docker build -t akbar00/boardgame:latest ."
                     }
                 }
             }
