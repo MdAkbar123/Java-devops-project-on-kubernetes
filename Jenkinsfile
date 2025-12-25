@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
-        ENABLE_TRIVY = "false"
+        ENABLE_TRIVY = "true"
     }
 
     tools {
