@@ -37,7 +37,7 @@ module "security" {
 module "jenkins_server" {
   source          = "./modules/compute"
   instance_name   = "Jenkins-Server"
-  instance_type   = "t2.micro"
+  instance_type   = "t2.large"
   security_group  = module.security.jenkins_sg_id
   subnet_id       = module.vpc.public_subnet_id
 
@@ -47,7 +47,7 @@ module "jenkins_server" {
 module "k8s_master" {
   source          = "./modules/compute"
   instance_name   = "K8s-Master"
-  instance_type   = "t2.micro"
+  instance_type   = "t2.medium"
   security_group  = module.security.k8s_master_sg_id 
   subnet_id       = module.vpc.public_subnet_id
 #   user_data_script = "scripts/install_k8s.sh"
@@ -57,7 +57,7 @@ module "k8s_master" {
 module "k8s_worker" {
   source          = "./modules/compute"
   instance_name   = "K8s-Worker"
-  instance_type   = "t2.micro"
+  instance_type   = "t2.medium"
   security_group  = module.security.k8s_worker_sg_id
   subnet_id       = module.vpc.public_subnet_id
 
@@ -68,7 +68,7 @@ module "k8s_worker" {
 module "sonarqube_server" {
   source          = "./modules/compute"
   instance_name   = "SonarQube-Server"
-  instance_type   = "t2.micro"
+  instance_type   = "t2.medium"
   security_group  = module.security.sonarqube_sg_id
   subnet_id       = module.vpc.public_subnet_id
 #   user_data_script = "scripts/install_sonarqube.sh"
@@ -79,7 +79,7 @@ module "sonarqube_server" {
 module "nexus_server" {
   source          = "./modules/compute"
   instance_name   = "Nexus-Server"
-  instance_type   = "t2.micro"
+  instance_type   = "t2.medium"
   security_group  = module.security.nexus_sg_id
   subnet_id       = module.vpc.public_subnet_id
 #   user_data_script = "scripts/install_nexus.sh"
