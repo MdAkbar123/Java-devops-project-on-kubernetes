@@ -30,6 +30,8 @@ The infrastructure is hosted on **AWS**, provisioned via **Terraform**, configur
 
 We used **Terraform** to provision 5 AWS EC2 instances and **Ansible** to configure software dependencies (Java, Docker, Kubeadm, etc.) on them.
 
+<img width="1920" height="1080" alt="Screenshot from 2025-12-22 22-58-17" src="https://github.com/user-attachments/assets/fafcde41-4479-4e0f-8ac0-a2b09dfe5477" />
+
 **The 5 Instances:**
 1.  **Jenkins Server:** The heart of the CI/CD pipeline.
 2.  **SonarQube Server:** Dedicated server for static code analysis.
@@ -76,6 +78,26 @@ We implemented a full observability stack directly on the Kubernetes cluster usi
     * **Cluster Monitoring:** CPU/Memory usage of Master/Worker nodes.
     * **Workload Monitoring:** Real-time status of the `boardgame` pods.
     * **Network I/O:** Visualizing traffic spikes during load testing.
+
+---
+
+## 📸 Screenshots
+
+### 1. Jenkins Stage View
+<img width="1857" height="1050" alt="Screenshot from 2025-12-23 00-43-54" src="https://github.com/user-attachments/assets/030f77a1-7efd-4712-bc23-4a9781519dbf" />
+> *Automated pipeline showing successful execution of all stages from Checkout to Deployment.*
+
+### 2. SonarQube Quality Gate
+<img width="1855" height="1053" alt="Screenshot from 2025-12-23 00-29-15" src="https://github.com/user-attachments/assets/de080cc0-0df6-4379-99bc-3a68f26c9f39" />
+> *Code passed the strict Quality Gate with 0 bugs and 0 vulnerabilities.*
+
+### 3. Nexus Artifact Repository
+<img width="1856" height="1053" alt="Screenshot from 2025-12-23 00-47-54" src="https://github.com/user-attachments/assets/fc94729b-4ff1-4324-85a9-768450ea962a" />
+> *Snapshot versions of the application JAR stored securely in Nexus.*
+
+### 4. Grafana Dashboard
+<img width="1920" height="1080" alt="Screenshot from 2025-12-23 02-16-13" src="https://github.com/user-attachments/assets/d8499a01-56d1-43da-8291-1fc43a82b180" />
+> *Real-time monitoring of Kubernetes cluster resources.*
 
 ---
 
